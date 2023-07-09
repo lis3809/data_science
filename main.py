@@ -1,18 +1,10 @@
-# This is a sample Python script.
+import numpy as np
+import pandas as pd
+pd.set_option('display.max_columns', None) # отобразить все колонки
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-def getUniq(sp: list):
-    s = set(sp)
-    print(s)
+from scipy import stats
 
 if __name__ == '__main__':
-    getUniq([1, 2, 3, 3])
+    df = pd.read_csv("C:/Users/STELS/PycharmProjects/data_science_1t/task_1.5/diabetes_prediction_dataset.csv")
+    df = df.loc[df.gender != 'Other']
+    print(df.gender.value_counts())
