@@ -4,3 +4,4 @@
 #my ignore list
 /.idea/
 .ipynb_checkpoints
+.vscode

@@ -4,18 +4,17 @@
  * (Хинт: количество посетителей можно посчитать отдельно).
  * */
 select 
-count(*) AS total
-, SUM(CASE WHEN genre = 'Male' THEN 1 ELSE 0 END) AS male
-, SUM(CASE WHEN genre = 'Female' THEN 1 ELSE 0 END) AS female
+SUM(CASE WHEN genre = 'Male' THEN 1 ELSE 0 END)/200::numeric*100 AS "male (%)"
+, SUM(CASE WHEN genre = 'Female' THEN 1 ELSE 0 END)/200::numeric*100 AS "female (%)"
 from public.mall_customers
 
 /*
  * 1.2 Напишите запрос, который вернёт всех мужчин, отсортированных по возрастанию возраста, убыванию Annual_Income 
  * и возрастанию Spending_Score (используйте иерархическую сортировку).
  */
-select * from public.mall_customers
+select customerid, age, annual_income, spending_score from public.mall_customers
 where genre = 'Male'
-order by age asc, annual_income desc
+order by age asc, annual_income desc, spending_score asc
 
 
 /*
