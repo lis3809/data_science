@@ -1,0 +1,116 @@
+/*
+ * === Часть 1 ===
+ * 1.1 Напишите запрос, который вернёт долю мужчин и женщин среди посетителей магазина. 
+ * (Хинт: количество посетителей можно посчитать отдельно).
+ * */
+select 
+count(*) AS total
+, SUM(CASE WHEN genre = 'Male' THEN 1 ELSE 0 END) AS male
+, SUM(CASE WHEN genre = 'Female' THEN 1 ELSE 0 END) AS female
+from public.mall_customers
+
+/*
+ * 1.2 Напишите запрос, который вернёт всех мужчин, отсортированных по возрастанию возраста, убыванию Annual_Income 
+ * и возрастанию Spending_Score (используйте иерархическую сортировку).
+ */
+select * from public.mall_customers
+where genre = 'Male'
+order by age asc, annual_income desc
+
+
+/*
+ * === Часть 2 ===
+ * 2.1 Напишите скрипт, который позволит узнать, 
+ * какой компанией летал каждый из пассажиров.
+ * */
+with tab as (
+select 
+trip.trip_no
+, trip.id_psg
+, pass.name as passenger
+, tr.id_comp
+, comp."name" as company
+from "AERO".pass_in_trip as trip 
+join "AERO".passenger as pass 
+on trip.id_psg = pass.id_psg
+join "AERO".trip as tr
+on trip.trip_no = tr.trip_no
+join "AERO".company as comp
+on tr.id_comp = comp.id_comp
+)
+select passenger, company from tab
+group by passenger, company
+order by passenger
+limit 100
+
+/*
+ * 2.2 Напишите скрипт, который вернёт всех пассажиров, 
+ * не совершавших полёт (не имевших билетов).
+ */
+with tab as (
+select 
+pass.name as passenger
+, trip.trip_no
+from "AERO".passenger as pass
+left join "AERO".pass_in_trip as trip
+on pass.id_psg = trip.id_psg
+)
+select passenger from tab where trip_no is null
+limit 100
+
+/*
+ * 2.3 Напишите скрипт, который позволит узнать, 
+ * в какие города летала Николь Кидман.
+ * */
+with tab as (
+select 
+trip.trip_no
+, trip.id_psg
+, pass.name as passenger
+, tr.town_to as city
+from "AERO".pass_in_trip as trip 
+join "AERO".passenger as pass 
+on trip.id_psg = pass.id_psg
+join "AERO".trip as tr
+on trip.trip_no = tr.trip_no
+)
+select distinct city from tab where passenger = 'Nikole Kidman'
+
+
+/*
+ * === Часть 3 ===
+ * 3.1 Напишите скрипт, который позволит узнать цену PC с маркером А.
+ * */
+with tab as (
+select
+prod.model as model_pc
+, prod.maker as marker
+, pc.price
+, pc.code 
+from "COMP".product as prod
+join "COMP".pc as pc
+on prod.model = pc.model
+)
+select code, model_pc, price from tab
+where marker = 'A'
+order by price
+limit 100
+
+/*
+ * 3.2 Напишите скрипт, который позволит узнать, 
+ * какие маркеры у лазерных принтеров.
+ * */
+with tab as (
+select
+prod.model
+, prod.maker as marker
+, print.model
+, print."type" as printer_type
+from "COMP".product as prod
+join "COMP".printer as print
+on prod.model = print.model
+)
+select printer_type, marker from tab
+where printer_type = 'Laser'
+order by marker
+limit 100
